@@ -8,6 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		27B239F2207FE09A008A1DEF /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B239F1207FE09A008A1DEF /* main.swift */; };
+		27B239F9207FE355008A1DEF /* CharacterFieldRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B239F8207FE355008A1DEF /* CharacterFieldRepresentable.swift */; };
+		27B239FB207FE59A008A1DEF /* Character+Representable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B239FA207FE59A008A1DEF /* Character+Representable.swift */; };
+		27B239FD207FE920008A1DEF /* RegularExpressionRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B239FC207FE920008A1DEF /* RegularExpressionRepresentable.swift */; };
+		27B239FF208025A8008A1DEF /* ClosedRange+Representable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B239FE208025A8008A1DEF /* ClosedRange+Representable.swift */; };
+		27B23A0120802700008A1DEF /* String+Representable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B23A0020802700008A1DEF /* String+Representable.swift */; };
+		27B23A0320802ABC008A1DEF /* CharacterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B23A0220802ABC008A1DEF /* CharacterType.swift */; };
+		27D58C6C20865ED00096B27A /* UnicodeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C6B20865ED00096B27A /* UnicodeProperty.swift */; };
+		27D58C6E208668E50096B27A /* UnicodeScalar+Representable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C6D208668E50096B27A /* UnicodeScalar+Representable.swift */; };
+		27D58C7020866AC20096B27A /* ArrayUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C6F20866AC20096B27A /* ArrayUtilities.swift */; };
+		27D58C72208673370096B27A /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C71208673370096B27A /* Helpers.swift */; };
+		27D58C74208673B00096B27A /* CharacterField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C73208673B00096B27A /* CharacterField.swift */; };
+		27D58C76208678CF0096B27A /* RegularExpressionCountable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C75208678CF0096B27A /* RegularExpressionCountable.swift */; };
+		27D58C7820867BD00096B27A /* RegularExpressionSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C7720867BD00096B27A /* RegularExpressionSequence.swift */; };
+		27D58C7A20867CB10096B27A /* PureRegularExpressionRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C7920867CB00096B27A /* PureRegularExpressionRepresentation.swift */; };
+		27D58C7C20867E1E0096B27A /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D58C7B20867E1E0096B27A /* Group.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +40,21 @@
 /* Begin PBXFileReference section */
 		27B239EE207FE09A008A1DEF /* Reggie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Reggie; sourceTree = BUILT_PRODUCTS_DIR; };
 		27B239F1207FE09A008A1DEF /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		27B239F8207FE355008A1DEF /* CharacterFieldRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterFieldRepresentable.swift; sourceTree = "<group>"; };
+		27B239FA207FE59A008A1DEF /* Character+Representable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Representable.swift"; sourceTree = "<group>"; };
+		27B239FC207FE920008A1DEF /* RegularExpressionRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularExpressionRepresentable.swift; sourceTree = "<group>"; };
+		27B239FE208025A8008A1DEF /* ClosedRange+Representable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClosedRange+Representable.swift"; sourceTree = "<group>"; };
+		27B23A0020802700008A1DEF /* String+Representable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Representable.swift"; sourceTree = "<group>"; };
+		27B23A0220802ABC008A1DEF /* CharacterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterType.swift; sourceTree = "<group>"; };
+		27D58C6B20865ED00096B27A /* UnicodeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeProperty.swift; sourceTree = "<group>"; };
+		27D58C6D208668E50096B27A /* UnicodeScalar+Representable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnicodeScalar+Representable.swift"; sourceTree = "<group>"; };
+		27D58C6F20866AC20096B27A /* ArrayUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtilities.swift; sourceTree = "<group>"; };
+		27D58C71208673370096B27A /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		27D58C73208673B00096B27A /* CharacterField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterField.swift; sourceTree = "<group>"; };
+		27D58C75208678CF0096B27A /* RegularExpressionCountable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularExpressionCountable.swift; sourceTree = "<group>"; };
+		27D58C7720867BD00096B27A /* RegularExpressionSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularExpressionSequence.swift; sourceTree = "<group>"; };
+		27D58C7920867CB00096B27A /* PureRegularExpressionRepresentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PureRegularExpressionRepresentation.swift; sourceTree = "<group>"; };
+		27D58C7B20867E1E0096B27A /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +88,21 @@
 			isa = PBXGroup;
 			children = (
 				27B239F1207FE09A008A1DEF /* main.swift */,
+				27D58C75208678CF0096B27A /* RegularExpressionCountable.swift */,
+				27D58C6F20866AC20096B27A /* ArrayUtilities.swift */,
+				27B239FC207FE920008A1DEF /* RegularExpressionRepresentable.swift */,
+				27D58C7920867CB00096B27A /* PureRegularExpressionRepresentation.swift */,
+				27B239F8207FE355008A1DEF /* CharacterFieldRepresentable.swift */,
+				27D58C6D208668E50096B27A /* UnicodeScalar+Representable.swift */,
+				27B239FA207FE59A008A1DEF /* Character+Representable.swift */,
+				27D58C7B20867E1E0096B27A /* Group.swift */,
+				27B23A0020802700008A1DEF /* String+Representable.swift */,
+				27B239FE208025A8008A1DEF /* ClosedRange+Representable.swift */,
+				27D58C71208673370096B27A /* Helpers.swift */,
+				27D58C7720867BD00096B27A /* RegularExpressionSequence.swift */,
+				27D58C73208673B00096B27A /* CharacterField.swift */,
+				27B23A0220802ABC008A1DEF /* CharacterType.swift */,
+				27D58C6B20865ED00096B27A /* UnicodeProperty.swift */,
 			);
 			path = Reggie;
 			sourceTree = "<group>";
@@ -119,7 +164,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27D58C7A20867CB10096B27A /* PureRegularExpressionRepresentation.swift in Sources */,
 				27B239F2207FE09A008A1DEF /* main.swift in Sources */,
+				27B23A0320802ABC008A1DEF /* CharacterType.swift in Sources */,
+				27D58C7C20867E1E0096B27A /* Group.swift in Sources */,
+				27D58C6C20865ED00096B27A /* UnicodeProperty.swift in Sources */,
+				27B239FB207FE59A008A1DEF /* Character+Representable.swift in Sources */,
+				27B239FF208025A8008A1DEF /* ClosedRange+Representable.swift in Sources */,
+				27D58C6E208668E50096B27A /* UnicodeScalar+Representable.swift in Sources */,
+				27D58C76208678CF0096B27A /* RegularExpressionCountable.swift in Sources */,
+				27D58C72208673370096B27A /* Helpers.swift in Sources */,
+				27B239FD207FE920008A1DEF /* RegularExpressionRepresentable.swift in Sources */,
+				27D58C7020866AC20096B27A /* ArrayUtilities.swift in Sources */,
+				27B239F9207FE355008A1DEF /* CharacterFieldRepresentable.swift in Sources */,
+				27D58C7820867BD00096B27A /* RegularExpressionSequence.swift in Sources */,
+				27B23A0120802700008A1DEF /* String+Representable.swift in Sources */,
+				27D58C74208673B00096B27A /* CharacterField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
