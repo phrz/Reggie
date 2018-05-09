@@ -13,13 +13,18 @@ public struct CharacterField {
 	private let isNegated: Bool
 	private var items: [CharacterFieldRepresentable]
 	
-	init(_ i: CharacterFieldRepresentable..., isNegated n: Bool = false) {
-		self.items = i
+	init(withCharacters characters: CharacterFieldRepresentable..., isNegated n: Bool = false) {
+		self.items = characters
 		self.isNegated = n
 	}
 	
-	init(_ i: [CharacterFieldRepresentable], isNegated n: Bool = false) {
-		self.items = i
+	init(withCharacters characters: [CharacterFieldRepresentable], isNegated n: Bool = false) {
+		self.items = characters
+		self.isNegated = n
+	}
+	
+	init(fromString string: String, isNegated n: Bool = false) {
+		self.items = Array(string)
 		self.isNegated = n
 	}
 	
@@ -27,7 +32,7 @@ public struct CharacterField {
 	/// those in the character group. Only works once to negate. Trying to
 	/// negate a negative character field (e.g. `[^A-Z]`) will do nothing.
 	func negated() -> CharacterField {
-		return CharacterField(items, isNegated: true)
+		return CharacterField(withCharacters: items, isNegated: true)
 	}
 }
 

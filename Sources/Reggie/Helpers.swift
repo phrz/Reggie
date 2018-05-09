@@ -22,15 +22,19 @@ public func never() -> PureRegularExpressionRepresentation {
 }
 
 public func char(_ character: Character) -> CharacterField {
-	return CharacterField(character)
+	return CharacterField(withCharacters: character)
 }
 
 public func chars(_ items: CharacterFieldRepresentable...) -> CharacterField {
-	return CharacterField(items)
+	return CharacterField(withCharacters: items)
 }
 
 public func chars(_ items: [CharacterFieldRepresentable]) -> CharacterField {
-	return CharacterField(items)
+	return CharacterField(withCharacters: items)
+}
+
+public func chars(_ string: String) -> CharacterField {
+	return CharacterField(fromString: string)
 }
 
 /// a non-capturing group
@@ -78,6 +82,12 @@ public func line(_ s: RegularExpressionRepresentable...) -> RegularExpressionSeq
 
 public func line(_ s: RegularExpressionSequence) -> RegularExpressionSequence {
 	return [pure("^"), s, pure("$")]
+}
+
+public func str(_ s: String) -> PureRegularExpressionRepresentation {
+	let maybeRepresentations = s.map { $0.regularExpressionRepresentation()() }
+	let representations = allOrNothing(maybeRepresentations) ?? []
+	return pure(representations.joined())
 }
 
 extension RegularExpressionRepresentable {

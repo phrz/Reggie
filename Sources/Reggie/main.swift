@@ -8,54 +8,43 @@
 
 import Foundation
 
-let fancyApostrophe = char("’")
+guard
+	let nameValidator = makeNameValidator(),
+	let styledPhoneValidator = makeStyledPhoneValidator(),
+	let phoneDestyler = makePhoneDestyler(),
+	let standardPhoneValidator = makeStandardizedPhoneValidator()
+	else {
+		print("Could not compile validators.")
+		exit(1)
+}
 
-// ASCII sucks!
-// let alphabet = chars("A"..."Z", "a"..."z")
+func processName(_ input: String) -> String? {
+	guard nameValidator.fullyMatches(input) else { return nil }
+	return input
+}
 
-let unicodeLetter = UnicodeProperty.letter.matching()
+func processPhoneNumber(_ input: String) -> String? {
+	// first, determine if the number is in an acceptable format given
+	// stylization. We are very liberal here, only preventing alphabetic
+	// characters and other irrelevant content.
+	guard styledPhoneValidator.fullyMatches(input) else { return nil }
+	
+	// then, strip anything other than + and digits to get a pseudo E.161
+	// -formatted number. This way, our NANP and E.161 schemes don't need
+	// to consider arbitrary delimiter styling.
+	let destyled = phoneDestyler.strippingMatches(in: input)
+	
+	// finally, validate the stripped-down E.161-formatted number
+	// to see if it complies with our delimiter-naïve version of NANP
+	// (if it's a +1 number) or with a pretty solid E.161 validator.
+	guard standardPhoneValidator.fullyMatches(destyled) else {
+		return nil
+	}
+	
+	return destyled
+}
 
-let validNameComponent = sequence(
-	unicodeLetter,
-	char("'").strictlyNonRepeating(),
-	fancyApostrophe.strictlyNonRepeating(),
-	char(".").strictlyNonRepeating()
-)
+for argument in arguments {
+	print(arguments)
+}
 
-let validNameWord = oneOfSequence(validNameComponent).oneOrMore()
-let hypenatedNameWord = sequence(char("-"), validNameWord)
-let unicodeWhitespace = UnicodeProperty.separator.matching()
-
-print(
-	line(
-		// first name
-		validNameWord,
-		hypenatedNameWord.maybe(),
-		
-		// if we don't recursively apply optionality like this
-		// [first]([second][third?])?
-		// then the second name could be interpreted under third name rules
-		// (i.e. if we did it like this: [first][second?][third?])
-		sequence(
-			// second name
-			sequence(
-				char(",").maybe(),
-				unicodeWhitespace,
-				validNameWord,
-				hypenatedNameWord.maybe()
-			),
-			
-			// third name (entirely optional)
-			sequence(
-				unicodeWhitespace,
-				validNameWord,
-				hypenatedNameWord.maybe()
-			).maybe()
-		).maybe()
-	)
-	.regularExpressionRepresentation()()
-	?? "nope"
-)
-
-//let pattern = chars("A"..."Z", "a"..."z", "0"..."9").negated().repeating(between: 5...10)
-//print(pattern.regularExpressionRepresentation()() ?? "whoops")

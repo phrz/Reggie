@@ -10,7 +10,10 @@ import Foundation
 
 /// a set of characters which cannot be directly represented in regex
 /// character fields, but instead must be backslash-escaped.
-public let characterFieldSpecialCharacters = Set<Character>(arrayLiteral: "^","-","]","\\")
+/// the PCRE standard states that opening square braces "[" don't need to be
+/// escaped in character fields, but NSRegularExpression fails to compile it
+/// if you do not escape it.
+public let characterFieldSpecialCharacters = Set<Character>(arrayLiteral: "^","-","]","\\","[")
 
 /// Any object that can be translated losslessly into a representation
 /// that is valid within a Regular Expression character field, i.e.
