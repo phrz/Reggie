@@ -8,12 +8,16 @@
 
 import Foundation
 
+let addDescription = """
+reggie ADD "Johnny Appleseed" "555 555 5555" — adds a person with a name and a telephone number to the database.
+"""
+
 guard
 	let nameValidator = makeNameValidator(),
 	let styledPhoneValidator = makeStyledPhoneValidator(),
 	let phoneDestyler = makePhoneDestyler(),
 	let standardPhoneValidator = makeStandardizedPhoneValidator()
-	else {
+else {
 		print("Could not compile validators.")
 		exit(1)
 }
@@ -44,7 +48,11 @@ func processPhoneNumber(_ input: String) -> String? {
 	return destyled
 }
 
-for argument in arguments {
-	print(arguments)
+let cli = CLI()
+cli.register(route: "ADD", description: addDescription, parameterCount: 2...2) {
+	print($0)
 }
 
+while(true) {
+	cli.handle(arguments: CommandLine.arguments)
+}

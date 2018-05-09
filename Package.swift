@@ -10,6 +10,6 @@ let package = Package(
 		.package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.0")
 	],
 	targets: [
-		.target(name: "Reggie", dependencies: ["SQLite"], path: "Reggie")
+		.target(name: "Reggie", dependencies: ["SQLite"])
 	]
 )

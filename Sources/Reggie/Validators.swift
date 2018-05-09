@@ -142,7 +142,6 @@ func makeStandardizedPhoneValidator() -> Pattern? {
 	
 	// try the NANP and E.164 standards separately
 	let expression = oneOf(nanp, e164)
-	print(expression.regularExpressionRepresentation()() ?? "poo")
 	do {
 		return try Pattern(expression)
 	} catch let e {
