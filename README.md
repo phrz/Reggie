@@ -67,11 +67,8 @@ cli.register(
 }
 ```
 
-### Name Validation
-
-
 ## Philosophy
-I have opted to not follow the validation cases provided on the assignment document, although I was able in earlier iterations of this project to pass all of those cases. In the case of phone numbers, my rationale is very simple: not a single one of the phone numbers in the Word Document labeled as "acceptable" phone numbers were actually valid, under NANP or E.164. My rationale for how I chose to validate human names, however, is a bit more subjective:
+I have opted to not follow the validation cases provided on the assignment document, although I was able in earlier iterations of this project to pass all of those cases. In the case of phone numbers, my rationale is very simple: not a single one of the phone numbers in the Word Document labeled as "acceptable" phone numbers were actually valid, under NANP or E.164. My rationale for how I chose to validate human names, however, is a bit more ideological:
 
 The FCC requires this label on many devices:
 
@@ -79,7 +76,9 @@ The FCC requires this label on many devices:
 > 
 > (2) this device must accept any interference received, including interference that may cause undesired operation.
 
-to disallow names based on arbitrary validation is a very limiting way of handling real human data, and some would argue unethical. It is certainly true that it is impossible to cover all cases, yet engineers love to think of the real world as a simplified and idealized system, to the point where they hold many [misconceptions about human names](https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/). These myths end up harming real people when the systems they've developed [refuse to acknowledge their existence](https://www.theguardian.com/money/2018/apr/27/etihad-passport-ticket-name-hyphen-airline). Rejecting individuals by their names is one of the simplest and most up-front forms of exclusion — engineers have an imperative to remove biases in their systems that exclude people or discourage their participation
+We have to understand the *intent* behind validating/filtering user input. Presumably, this validation system is meant to be strict, so as to protect fragile systems that that data may run into later in our application pipeline. This may include database queries with SQL injection vulnerabilities, places in our templating engine that allow Cross Site Scripting (XSS), and so on. Such a mechanism is not a sufficient replacement for, or even a temporary alternative to hardening those systems. I believe that a validation step meant to prevent these sorts of problems is misguided, as it ambitiously overextends the actual purpose of data validation: "given user-input data, is it well-structured based on some prototype of that type of data?" — this axiom applies to structured content like phone numbers, street addresses, serial numbers, dates, and so on. Validating phone numbers as structured data against the North American Numbering Plan (NANP) and E.164 standards in this project is actually a useful task. Names, however, are *not* structured data, and there exists no prototypical name; so in this project we are only meant to use validation as a way to protect fragile systems.
+
+To disallow names based on arbitrary validation is a very limiting way of handling real human data, and some would argue unethical. It is certainly true that it is impossible to cover all cases, yet engineers love to think of the real world as a simplified and idealized system, to the point where they hold many [misconceptions about human names](https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/). These myths end up harming real people when the systems they've developed [refuse to acknowledge their existence](https://www.theguardian.com/money/2018/apr/27/etihad-passport-ticket-name-hyphen-airline). Rejecting individuals by their names is one of the simplest and most up-front forms of exclusion — and engineers have an imperative to remove biases in their systems that exclude people or discourage their participation.
 
 ## Assumptions
 - There may not be duplicate names or phones in the database. (yes, this is a violation of my above philosophy, but it was added in pursuit of haste rather than correctness). This was mainly to simplify the job of deleting entries — if I had more time, or had spent less time on my DSL, I'd have the CLI ask the user to disambiguate when asking to delete something that appears multiple times, but I'd probably still prevent entries that have the same name *AND* number, just allow repeat names *OR* numbers.
@@ -91,6 +90,88 @@ to disallow names based on arbitrary validation is a very limiting way of handli
 - When validating E.164 numbers, I ensure that no number, including its country code, exceed 15 digits as per the standard, but beyond that, I made no effort to validate numbers based on their country-specific phone number formats and distribution rules. This would've required far too much research and implementation work, so beyond checking international format compliance, there is no rigorous validity checks.
 - For E.164, I assume the shortest national number (excluding country code) is four digits, based on evidence that Saint Helena has the shortest numbers at four digits, and not wanting to allow users to enter special numbers like 911. I based this off the idea that this validation tool was for a business, i.e. eCommerce, and would want valid civilian phones. If the use case were as a phonebook, I would allow practically any number, much like the iPhone does, to facilitate special telephone numbers like 911, or special text numbers that usually consist of five digits.
 - Once again considering the above use case, and understanding that in this database, phone numbers are meant as global and absolute identifiers, I forbid or at least ignore the use of international 
+
+## Validation implementation
+### Name validation
+In my original implementation of name validation, I attempted an ambitious whitelist approach that relied on Unicode Property tags (`\p{_}`) in RegEx (called `UnicodeProperty` in `Reggie`). It accepted all international scripts, including CJK scripts (Chinese, Japanese, and Korean), Hebrew, Arabic, Vietnamese, Extended Latin, and most others. I accomplished this by using the `letter` property: `\p{L}` or `UnicodeProperty.letter.matching()` in `Reggie`. Names could be hyphenated multiple times, but not at the beginnings or ends of words, and there could be a comma after the first token, followed by one or two other tokens following roughly the same rules, delimited by any international whitespace, `UnicodeProperty.separator`. Not only did this work with most imaginable Latin alphabet names, but it worked internationally. However, it did reject people with numbers in their names.
+As robust and comprehensive as this implementation was, it was very complex (the pattern generation code in the Reggie DSL taking dozens of lines of code), and a whitelist was the wrong approach for human names, which are always more complex than one may imagine.
+
+As sad as it may be, I deleted that version, the version that was so complex that it necessitated making an entire RegEx DSL, and replaced it with just this:
+
+```swift
+let expression = line(
+	chars("!@#$%^&*()+=[]{}<>\\|/?:;\r\n\t\\x00").negated().oneOrMore()
+)
+```
+
+which resolves to the following pattern:
+
+```swift
+^[^!@#$%\^&*()+=\[\]{}<>\\|/?:;\r\n\t\\x00]+$
+```
+
+It may seem utterly simplistic and not worth weeks of work and research of the PCRE specification, but I believe my large and complex implementation was a learning process to come to this conclusion: that although it is still not perfect, in that it may reject some legitimate names, it is the least restrictive safe approach for using input validation to protect fragile systems from categorical injection attacks.
+
+I do not think that this is a solved problem, or a perfect implementation. I think the whole concept of name validation (as described in "Philosophy") merits reevaluation. I do, however, firmly believe that this minimal, least-invasive blacklist approach is most appropriate for this specific use-case.
+
+#### The old, Unicode Property whitelist approach
+This is not what I submitted, but was the end product of a significant amount of work, and could be considered an alternative approach to this problem.
+```swift
+let fancyApostrophe = char("’")
+
+let unicodeLetter = UnicodeProperty.letter.matching()
+
+let validNameComponent = sequence(
+	unicodeLetter,
+	char("'").strictlyNonRepeating(),
+	fancyApostrophe.strictlyNonRepeating(),
+	char(".").strictlyNonRepeating()
+)
+
+let validNameWord = oneOfSequence(validNameComponent).oneOrMore()
+let hypenatedNameWord = sequence(char("-"), validNameWord)
+let unicodeWhitespace = UnicodeProperty.separator.matching()
+
+let exp = line(
+	// first name
+	validNameWord,
+	hypenatedNameWord.maybe(),
+	
+	// if we don't recursively apply optionality like this
+	// [first]([second][third?])?
+	// then the second name could be interpreted under third name rules
+	// (i.e. if we did it like this: [first][second?][third?])
+	sequence(
+		// second name
+		sequence(
+			char(",").maybe(),
+			unicodeWhitespace,
+			validNameWord,
+			hypenatedNameWord.maybe()
+		),
+		
+		// third name (entirely optional)
+		sequence(
+			unicodeWhitespace,
+			validNameWord,
+			hypenatedNameWord.maybe()
+		).maybe()
+	).maybe()
+)
+
+let pattern = try? ReggiePattern(exp)
+print(pattern?.patternString ?? "Failed")
+```
+
+This results in the following pattern:
+```
+^(?:\p{L}|['](?!['])|[\x{2019}](?![\x{2019}])|[.](?![.]))+(?:[\-](?:\p{L}|['](?!['])|[\x{2019}](?![\x{2019}])|[.](?![.]))+)?(?:[,]?\p{Z}(?:\p{L}|['](?!['])|[\x{2019}](?![\x{2019}])|[.](?![.]))+(?:[\-](?:\p{L}|['](?!['])|[\x{2019}](?![\x{2019}])|[.](?![.]))+)?(?:\p{Z}(?:\p{L}|['](?!['])|[\x{2019}](?![\x{2019}])|[.](?![.]))+(?:[\-](?:\p{L}|['](?!['])|[\x{2019}](?![\x{2019}])|[.](?![.]))+)?)?)?$
+```
+
+at the outset of this project, I had begun hand typing just such a pattern. When I got to a length much shorter than above, I realized it was illegible and impossible to work with, the impetus for making `Reggie`. I did not dispose this method due to its complexity, but rather because a whitelist approach was inappropriate. I welcome you to try the above pattern. Note: `\x{2019}` represents the "fancy" apostrophe as found in the assignment validation data, probably due to Microsoft Word auto-substituting it for a regular apostrophe. This original method meant to strictly comply with the given test data.
+
+### Telephone validation
+Telephone number validation is far less political than human name validation, and this explanation will be a little tidier.
 
 ## Evaluating my approach (pros and cons)
 ### Name validation
