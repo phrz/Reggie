@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-swift run
+swift build
+SWIFT_BIN_PATH="$(swift build --show-bin-path)"
+$SWIFT_BIN_PATH/ReggieApp "$@" # pass args to executable

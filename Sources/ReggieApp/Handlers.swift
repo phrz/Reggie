@@ -2,6 +2,54 @@ import Foundation
 import Reggie
 
 class Handlers {
+
+	static func listRoute(app: ReggieApplication, arguments args: [String]) {
+		if !app.fileExists() {
+			app.createFile()
+		}
+		guard let file = app.readFile() else {
+			print("Could not read file.")
+			return
+		}
+
+		print("\nName: Telephone")
+		for entry in file.entries {
+			print("\(entry.name):\n    \(entry.phone)")
+		}
+		print()
+	}
+
+	static func deleteRoute(app: ReggieApplication, arguments args: [String]) {
+		// the name or telephone of the entry to delete
+		let deleteParameter = args[0]
+
+		if !app.fileExists() {
+			app.createFile()
+		}
+		guard var file = app.readFile() else {
+			print("Could not read file.")
+			return
+		}
+
+		let oldSize = file.entries.count
+		file.entries = file.entries.filter { 
+			$0.name != deleteParameter && $0.phone != deleteParameter
+		}
+		let newSize = file.entries.count
+
+		if newSize == oldSize {
+			print("No matches found.")
+			return
+		}
+
+		if !app.writeFile(file) {
+			print("Failed to write file.")
+			return
+		}
+		print("Removed \"\(deleteParameter)\" from database.")
+	}
+
+
 	static func addRoute(app: ReggieApplication, arguments args: [String]) {
 		guard let validName = app.processName(args[0]) else {
 			print("\nYou've provided the name:")

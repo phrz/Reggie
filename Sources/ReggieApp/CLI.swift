@@ -28,6 +28,8 @@ class CLI {
 		// we need the executable name itself + the route name
 		// at a minimum (2 args)
 		guard arguments.count >= 2 else {
+			print("BAD ARG COUNT")
+			print(arguments.count)
 			help()
 			return
 		}
@@ -37,11 +39,13 @@ class CLI {
 		let givenRouteName = arguments[1]
 
 		guard let route = self.routes[givenRouteName] else { 
+			print("NO ROUTE FOUND")
 			help()
 			return 
 		}
 		
 		guard route.parameterCount.contains(givenRouteArgs) else {
+			print("NOT COMPLIANT WITH ROUTE PARAM #")
 			help()
 			return
 		}

@@ -45,33 +45,7 @@ class ReggieApplication {
 			routeName: "DEL",
 			parameterCount: 1..<2
 		) { [unowned self] args in
-			// the name or telephone of the entry to delete
-			let deleteParameter = args[0]
-
-			if !self.fileExists() {
-				self.createFile()
-			}
-			guard var file = self.readFile() else {
-				print("Could not read file.")
-				return
-			}
-
-			let oldSize = file.entries.count
-			file.entries = file.entries.filter { 
-				$0.name != deleteParameter && $0.phone != deleteParameter
-			}
-			let newSize = file.entries.count
-
-			if newSize == oldSize {
-				print("No matches found.")
-				return
-			}
-
-			if !self.writeFile(file) {
-				print("Failed to write file.")
-				return
-			}
-			print("Removed \"\(deleteParameter)\" from database.")
+			Handlers.deleteRoute(app: self, arguments: args)
 		}
 
 
@@ -80,19 +54,7 @@ class ReggieApplication {
 			routeName: "LIST",
 			parameterCount: 0..<1
 		) { [unowned self] args in
-			if !self.fileExists() {
-				self.createFile()
-			}
-			guard let file = self.readFile() else {
-				print("Could not read file.")
-				return
-			}
-
-			print("\nName: Telephone")
-			for entry in file.entries {
-				print("\(entry.name):\n    \(entry.phone)")
-			}
-			print()
+			Handlers.listRoute(app: self, arguments: args)
 		}
 	}
 
