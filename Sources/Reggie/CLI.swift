@@ -1,33 +1,64 @@
 import Foundation
 
 class CLI {
+	struct Route {
+		let parameterCount: Range<Int>
+		let handler: RouteHandler
+	}
+
 	typealias RouteHandler = ([String]) -> ()
-	private var parameterCounts: [String: Range<Int>] = [:]
-	private var routes: [String: RouteHandler] = [:]
-	private var docs: [String: String?] = [:]
+	private var routes: [String: Route] = [:]
 
 	func register(
-		route: String, 
-		description: String? = nil, 
-		parameterCount: Range<Int> = Range<Int>(0...0), 
+		routeName: String, 
+		parameterCount: Range<Int> = Range(0...0),
 		withHandler handler: @escaping RouteHandler
 	) {
-		self.routes[route] = handler
-		self.parameterCounts[route] = parameterCount
-		self.docs[route] = description
+		self.routes[routeName] = Route(
+			parameterCount: parameterCount,
+			handler: handler
+		)
 	}
 
 	func handle(arguments: [String]) {
-		// we need the command name itself + the route name
-		guard arguments.count >= 2 else { help(); return }
+		// we need the executable name itself + the route name
+		// at a minimum (2 args)
+		guard arguments.count >= 2 else {
+			help()
+			return
+		}
 
-		let routeName = arguments[1]
-		guard let handler = self.routes[routeName] else { help(); return }
+		// the args after the executable and the route name
+		let givenRouteArgs = arguments.count - 2
+		let givenRouteName = arguments[1]
 
-		guard argument
+		guard let route = self.routes[givenRouteName] else { 
+			help()
+			return 
+		}
+		
+		guard route.parameterCount.contains(givenRouteArgs) else {
+			help()
+			return
+		}
+
+		// the arguments the route expects are the arguments excluding
+		// the executable name and the route name
+		route.handler(Array(arguments.suffix(from: 2)))
 	}
 
 	func help() {
-		print("HELP")
+		print(
+			"""
+			USAGE: 
+			reggie ADD "<name>" "<telephone>"
+				adds a person's name and telephone number to the database.
+			reggie DEL "<name>"
+			reggie DEL "<telephone>"
+				delete an entry by matching the name or telephone number
+			reggie LIST
+				list the contents of the database
+			"""
+		)
 	}
 }
