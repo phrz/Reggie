@@ -14,6 +14,10 @@ class CLI {
 		parameterCount: Range<Int> = Range(0...0),
 		withHandler handler: @escaping RouteHandler
 	) {
+		guard self.routes[routeName] == nil else {
+			print("Logic Error: Cannot register another route with a duplicate name '\(routeName)'!")
+			exit(1)
+		}
 		self.routes[routeName] = Route(
 			parameterCount: parameterCount,
 			handler: handler

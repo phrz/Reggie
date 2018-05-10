@@ -44,11 +44,30 @@ class ReggieApplication {
 			parameterCount: 2..<3
 		) { [unowned self] args in
 			guard let validName = self.processName(args[0]) else {
-				print("Bad name.")
+				print("\nYou've provided the name:")
+				print("\n    \(args[0])\n")
+				print("\nI'm sorry, that does not quite look like a name.\n")
+				print("    USAGE: reggie ADD <name> <phone>\n")
 				return
 			}
 			guard let validPhone = self.processPhoneNumber(args[1]) else {
-				print("Bad phone.")
+				print("\nYou've provided the phone number:")
+				print("\n    \(args[1])\n")
+				print("I'm sorry, that does not quite look like a valid phone number.")
+				print("This is what we're used to seeing, and we don't normally care")
+				print("how you space it or where you put dashes or dots. If you have")
+				print("a (+1) number from North America, it's OK to leave the +1 in")
+				print("or take it out, but it has to be 10 numbers. We make sure")
+				print("it's a real North American number based on some rules for how")
+				print("the numbers are given out. If you have a number that isn't (+1),")
+				print("you'll have to provide your country code no matter what.\n")
+				print("    North American numbers:  +1 ### ### ####")
+				print("                                ### ### ####")
+				print("    International (E.164):   +# ##############")
+				print("                            +## #############")
+				print("                           +### ############\n")
+				print("    USAGE: reggie ADD <name> <phone>\n")
+				
 				return
 			}
 
@@ -62,19 +81,84 @@ class ReggieApplication {
 				print("Could not read file.")
 				return
 			}
+
+			// linear search for duplicates
+			for e in file.entries {
+				if e.name == validName {
+					print("An entry already exists with that name.")
+					return
+				}
+				if e.phone == validPhone {
+					print("An entry already exists with that phone number.")
+					return
+				}
+			}
+
+			// save the new entry if there are no duplicates.
 			file.entries.append(entry)
-			self.writeFile(file)
+
+			if !self.writeFile(file) {
+				print("Failed to write file.")
+				return
+			}
 			print("Saved \"\(validName)\" to database.")
 		}
 
 		// reggie DEL <name>
-
-
 		// reggie DEL <phone>
+		cli.register(
+			routeName: "DEL",
+			parameterCount: 1..<2
+		) { [unowned self] args in
+			// the name or telephone of the entry to delete
+			let deleteParameter = args[0]
+
+			if !self.fileExists() {
+				self.createFile()
+			}
+			guard var file = self.readFile() else {
+				print("Could not read file.")
+				return
+			}
+
+			let oldSize = file.entries.count
+			file.entries = file.entries.filter { 
+				$0.name != deleteParameter && $0.phone != deleteParameter
+			}
+			let newSize = file.entries.count
+
+			if newSize == oldSize {
+				print("No matches found.")
+				return
+			}
+
+			if !self.writeFile(file) {
+				print("Failed to write file.")
+				return
+			}
+			print("Removed \"\(deleteParameter)\" from database.")
+		}
 
 
 		// reggie LIST
+		cli.register(
+			routeName: "LIST",
+			parameterCount: 0..<1
+		) { [unowned self] args in
+			if !self.fileExists() {
+				self.createFile()
+			}
+			guard let file = self.readFile() else {
+				print("Could not read file.")
+				return
+			}
 
+			print("\nName: Telephone")
+			for entry in file.entries {
+				print("\(entry.name):\n    \(entry.phone)")
+			}
+			print()
+		}
 	}
 
 	func fileExists() -> Bool {
@@ -82,7 +166,7 @@ class ReggieApplication {
 	}
 
 	func createFile() {
-		let contents = "[]".data(using: .utf8)
+		let contents = "{\"entries\":[]}".data(using: .utf8)
 		fileManager.createFile(atPath: reggieFilePath, contents: contents)
 	}
 
@@ -123,8 +207,8 @@ class ReggieApplication {
 		// characters and other irrelevant content.
 		guard styledPhoneValidator.fullyMatches(input) else { return nil }
 		
-		// then, strip anything other than + and digits to get a pseudo E.161
-		// -formatted number. This way, our NANP and E.161 schemes don't need
+		// then, strip anything other than + and digits to get a pseudo E.164
+		// -formatted number. This way, our NANP and E.164 schemes don't need
 		// to consider arbitrary delimiter styling.
 		let destyled = phoneDestyler.strippingMatches(in: input)
 		
