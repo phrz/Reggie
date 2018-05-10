@@ -6,14 +6,6 @@ class ReggieApplication {
 	let fileManager = FileManager()
 	let reggieFilePath = "./reggie.json"
 
-	struct ReggieFile: Codable {
-		struct Entry: Codable {
-			var name: String
-			var phone: String
-		}
-		var entries: [Entry]
-	}
-
 	let nameValidator: ReggiePattern
 	let styledPhoneValidator: ReggiePattern
 	let phoneDestyler: ReggiePattern
@@ -44,65 +36,7 @@ class ReggieApplication {
 			routeName: "ADD",
 			parameterCount: 2..<3
 		) { [unowned self] args in
-			guard let validName = self.processName(args[0]) else {
-				print("\nYou've provided the name:")
-				print("\n    \(args[0])\n")
-				print("\nI'm sorry, that does not quite look like a name.\n")
-				print("    USAGE: reggie ADD <name> <phone>\n")
-				return
-			}
-			guard let validPhone = self.processPhoneNumber(args[1]) else {
-				print("\nYou've provided the phone number:")
-				print("\n    \(args[1])\n")
-				print("I'm sorry, that does not quite look like a valid phone number.")
-				print("This is what we're used to seeing, and we don't normally care")
-				print("how you space it or where you put dashes or dots. If you have")
-				print("a (+1) number from North America, it's OK to leave the +1 in")
-				print("or take it out, but it has to be 10 numbers. We make sure")
-				print("it's a real North American number based on some rules for how")
-				print("the numbers are given out. If you have a number that isn't (+1),")
-				print("you'll have to provide your country code no matter what.\n")
-				print("    North American numbers:  +1 ### ### ####")
-				print("                                ### ### ####")
-				print("    International (E.164):   +# ##############")
-				print("                            +## #############")
-				print("                           +### ############\n")
-				print("    USAGE: reggie ADD <name> <phone>\n")
-				
-				return
-			}
-
-			let entry = ReggieFile.Entry(name: validName, phone: validPhone)
-
-			if !self.fileExists() {
-				self.createFile()
-			}
-
-			guard var file = self.readFile() else {
-				print("Could not read file.")
-				return
-			}
-
-			// linear search for duplicates
-			for e in file.entries {
-				if e.name == validName {
-					print("An entry already exists with that name.")
-					return
-				}
-				if e.phone == validPhone {
-					print("An entry already exists with that phone number.")
-					return
-				}
-			}
-
-			// save the new entry if there are no duplicates.
-			file.entries.append(entry)
-
-			if !self.writeFile(file) {
-				print("Failed to write file.")
-				return
-			}
-			print("Saved \"\(validName)\" to database.")
+			Handlers.addRoute(app: self, arguments: args)
 		}
 
 		// reggie DEL <name>

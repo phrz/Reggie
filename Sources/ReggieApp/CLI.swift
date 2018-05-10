@@ -54,6 +54,7 @@ class CLI {
 	func help() {
 		print(
 			"""
+
 			USAGE: 
 			reggie ADD "<name>" "<telephone>"
 				adds a person's name and telephone number to the database.
@@ -62,6 +63,7 @@ class CLI {
 				delete an entry by matching the name or telephone number
 			reggie LIST
 				list the contents of the database
+				
 			"""
 		)
 	}
