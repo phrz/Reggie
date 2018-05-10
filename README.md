@@ -89,7 +89,7 @@ To disallow names based on arbitrary validation is a very limiting way of handli
 - When validating NANP numbers, I assume that numbers still follow the format as found at the time of writing this program, regarding specific rules about what digits can be where in a NANP number (see Wikipedia for North American Numbering Plan).
 - When validating E.164 numbers, I ensure that no number, including its country code, exceed 15 digits as per the standard, but beyond that, I made no effort to validate numbers based on their country-specific phone number formats and distribution rules. This would've required far too much research and implementation work, so beyond checking international format compliance, there is no rigorous validity checks.
 - For E.164, I assume the shortest national number (excluding country code) is four digits, based on evidence that Saint Helena has the shortest numbers at four digits, and not wanting to allow users to enter special numbers like 911. I based this off the idea that this validation tool was for a business, i.e. eCommerce, and would want valid civilian phones. If the use case were as a phonebook, I would allow practically any number, much like the iPhone does, to facilitate special telephone numbers like 911, or special text numbers that usually consist of five digits.
-- Once again considering the above use case, and understanding that in this database, phone numbers are meant as global and absolute identifiers, I forbid or at least ignore the use of international 
+- Once again considering the above use case, and understanding that in this database, phone numbers are meant as global and absolute identifiers, I forbid or at least ignore the use of international dial-out codes like "00".
 
 ## Validation implementation
 ### Name validation
@@ -116,6 +116,7 @@ I do not think that this is a solved problem, or a perfect implementation. I thi
 
 #### The old, Unicode Property whitelist approach
 This is not what I submitted, but was the end product of a significant amount of work, and could be considered an alternative approach to this problem.
+
 ```swift
 let fancyApostrophe = char("’")
 
@@ -476,7 +477,7 @@ My test cases mostly succeed, as they begin with actual valid NANP numbers (four
 - the result of over fifty hours of intense research into PCRE regex specifications, Unicode standards, UTF-16 encoding for regex, the Swift type system, combinatorial architectures, international phone number specifications.
 - bears the fruit of a powerful, composable, simple to use regular expression engine for building powerful, robust expressions that are too complex to hand-generate
 ### Name validation
-- Probably excepts every human name, unlike other attempts
+- Probably accepts every human name, unlike other attempts
 - Blocks most common SQL injection and XSS payloads, and even HTML character literals `&xxx;`.
 - Accepts every written script.
 - Not a whitelist approach: this could be a pro or con based on your philosophy
