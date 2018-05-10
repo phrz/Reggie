@@ -14,7 +14,7 @@ import Foundation
 public protocol RegularExpressionCountable: RegularExpressionRepresentable {
 	/// represents the `?` quantifier.
 	func maybe() -> RegularExpressionRepresentable
-	
+
 	/// represents the `*` quantifier.
 	func zeroOrMore() -> RegularExpressionRepresentable
 	

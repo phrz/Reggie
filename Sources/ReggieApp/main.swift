@@ -8,6 +8,8 @@
 
 import Foundation
 
+print(makeStandardizedPhoneValidator()!.patternString)
+
 let app = ReggieApplication()!
 app.run()
 

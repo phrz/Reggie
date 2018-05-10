@@ -22,6 +22,12 @@ public class ReggiePattern {
 	}
 	
 	private let patternExpression: NSRegularExpression
+
+	public var patternString: String {
+		get {
+			return self.patternExpression.pattern
+		}
+	}
 	
 	public init(_ regex: RegularExpressionRepresentable) throws {
 		guard let ps = regex.regularExpressionRepresentation()() else {
