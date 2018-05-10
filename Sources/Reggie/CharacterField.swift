@@ -31,7 +31,7 @@ public struct CharacterField {
 	/// returns a new character field which matches all characters *except*
 	/// those in the character group. Only works once to negate. Trying to
 	/// negate a negative character field (e.g. `[^A-Z]`) will do nothing.
-	func negated() -> CharacterField {
+	public func negated() -> CharacterField {
 		return CharacterField(withCharacters: items, isNegated: true)
 	}
 }

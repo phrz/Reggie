@@ -53,12 +53,12 @@ public enum UnicodeProperty: String {
 	/// any kind of whitespace or invisible separator.
 	case separator = "Z"
 	
-	func matching() -> RegularExpressionRepresentable {
+	public func matching() -> RegularExpressionRepresentable {
 		// \p{xx} - a character with the xx property
 		return PureRegularExpressionRepresentation(literal: "\\p{\(self.rawValue)}")
 	}
 	
-	func notMatching() -> RegularExpressionRepresentable {
+	public func notMatching() -> RegularExpressionRepresentable {
 		// \P{xx} - a character without the xx property
 		return PureRegularExpressionRepresentation(literal: "\\P{\(self.rawValue)}")
 	}

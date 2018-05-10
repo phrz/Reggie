@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import Reggie
+
+typealias ReggiePattern = Reggie.ReggiePattern
 
 // +1 is EXCLUDED to be matched separately in NANP
 let oneDigitCountryCodes = ["7"]
@@ -44,7 +47,7 @@ let enDash = Character("–")
 let emDash = Character("—")
 let unicodeWhitespace = UnicodeProperty.separator.matching()
 
-func makeNameValidator() -> Pattern? {
+func makeNameValidator() -> ReggiePattern? {
 	// I initally tried a very ambitious whitelist approach by matching Unicode Categories
 	// with the \p{} flag (Unicode property matching). Instead, I've found a blacklist
 	// approach to be much more sensible.
@@ -53,7 +56,7 @@ func makeNameValidator() -> Pattern? {
 	)
 	
 	do {
-		return try Pattern(expression)
+		return try ReggiePattern(expression)
 	} catch let e {
 		print(e.localizedDescription)
 		return nil
@@ -62,8 +65,8 @@ func makeNameValidator() -> Pattern? {
 
 /// validates the format of a styled, delimited phone number. Is very liberal,
 /// just generally avoids alphabet characters.
-func makeStyledPhoneValidator() -> Pattern? {
-	return try? Pattern(
+func makeStyledPhoneValidator() -> ReggiePattern? {
+	return try? ReggiePattern(
 		oneOf(
 			chars("+","0"..."9",hyphen,enDash,emDash,".","(",")"), unicodeWhitespace
 		).oneOrMore()
@@ -71,8 +74,8 @@ func makeStyledPhoneValidator() -> Pattern? {
 }
 
 /// strips formatting from a phone number, just leaving + and numbers.
-func makePhoneDestyler() -> Pattern? {
-	return try? Pattern(
+func makePhoneDestyler() -> ReggiePattern? {
+	return try? ReggiePattern(
 		chars("0"..."9","+").negated().oneOrMore()
 	)
 }
@@ -81,7 +84,7 @@ func makePrefixes(codes: [String]) -> RegularExpressionRepresentable {
 	return sequence(char("+"), oneOfSequence(sequence(codes.map { str($0) })))
 }
 
-func makeStandardizedPhoneValidator() -> Pattern? {
+func makeStandardizedPhoneValidator() -> ReggiePattern? {
 	
 	let digit = chars("0"..."9")
 	let notZeroOrOne = chars("2"..."9")
@@ -143,7 +146,7 @@ func makeStandardizedPhoneValidator() -> Pattern? {
 	// try the NANP and E.164 standards separately
 	let expression = oneOf(nanp, e164)
 	do {
-		return try Pattern(expression)
+		return try ReggiePattern(expression)
 	} catch let e {
 		print(e.localizedDescription)
 		return nil

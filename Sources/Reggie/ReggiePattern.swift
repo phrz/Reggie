@@ -1,5 +1,5 @@
 //
-//  Pattern.swift
+//  ReggiePattern.swift
 //  Reggie
 //
 //  Created by Paul Herz on 2018-05-03.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Pattern {
+public class ReggiePattern {
 	private let noOptions: NSRegularExpression.MatchingOptions = []
 	
 	// we need NSRange objects for the full range of a string
@@ -30,7 +30,7 @@ class Pattern {
 		patternExpression = try NSRegularExpression(pattern: ps, options: [])
 	}
 	
-	func matches(in input: String) -> [Substring] {
+	public func matches(in input: String) -> [Substring] {
 		let fullRange = NSRange(location: 0, length: input.count)
 		let matches = patternExpression.matches(in: input, options: noOptions, range: fullRange)
 		
@@ -43,7 +43,7 @@ class Pattern {
 	
 	/// determines whether the regex completely matches the input, not a subset
 	/// of it.
-	func fullyMatches(_ input: String) -> Bool {
+	public func fullyMatches(_ input: String) -> Bool {
 		let range = NSRange(location: 0, length: input.count)
 		
 		let matchRange: NSRange? = patternExpression.rangeOfFirstMatch(
@@ -55,7 +55,7 @@ class Pattern {
 		return matchRange == range
 	}
 	
-	func replacingMatches(in input: String, with replacementPattern: String) -> String {
+	public func replacingMatches(in input: String, with replacementPattern: String) -> String {
 		let mutableString = NSMutableString(string: input)
 		
 		patternExpression.replaceMatches(
@@ -68,7 +68,7 @@ class Pattern {
 		return String(mutableString)
 	}
 	
-	func strippingMatches(in input: String) -> String{
+	public func strippingMatches(in input: String) -> String{
 		return replacingMatches(in: input, with: "")
 	}
 }

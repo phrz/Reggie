@@ -1,4 +1,5 @@
 import Foundation
+import Reggie
 
 class ReggieApplication {
 
@@ -13,10 +14,10 @@ class ReggieApplication {
 		var entries: [Entry]
 	}
 
-	let nameValidator: Pattern
-	let styledPhoneValidator: Pattern
-	let phoneDestyler: Pattern
-	let e161PhoneValidator: Pattern
+	let nameValidator: ReggiePattern
+	let styledPhoneValidator: ReggiePattern
+	let phoneDestyler: ReggiePattern
+	let e161PhoneValidator: ReggiePattern
 
 	let cli: CLI
 

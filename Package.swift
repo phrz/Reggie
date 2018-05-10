@@ -4,10 +4,12 @@ import PackageDescription
 let package = Package(
 	name: "Reggie",
 	products: [
-		.executable(name: "Reggie", targets: ["Reggie"])
+		Product.library(name: "Reggie", targets: ["Reggie"]),
+		Product.executable(name: "ReggieApp", targets: ["ReggieApp"])
 	],
 	dependencies: [],
 	targets: [
-		.target(name: "Reggie", dependencies: [])
+		.target(name: "Reggie", dependencies: []),
+		.target(name: "ReggieApp", dependencies: ["Reggie"])
 	]
 )
